@@ -3,6 +3,10 @@ import { createElementFromString } from "./utils.js";
 
 const template = createElementFromString(`
   <style>
+    pre {
+      margin-block: 0;
+    }
+
     @media (prefers-color-scheme: dark) {
       .shiki,
       .shiki span {
