@@ -66,7 +66,7 @@ class SyntaxHighlightElement extends HTMLElement {
       .getAttribute("class")
       .split(" ")
       .filter((className) => className.startsWith("language-"))[0]
-      .splice(9);
+      .slice(9);
   }
 
   get theme() {
