@@ -1,0 +1,5 @@
+defaults
+not IE <= 11
+not OperaMini all
+not kaios <= 2.5
+not and_qq <= 14.9
