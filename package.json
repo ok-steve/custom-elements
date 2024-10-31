@@ -1,0 +1,47 @@
+{
+  "name": "custom-elements",
+  "private": true,
+  "version": "0.0.0",
+  "description": "A library of vanilla custom elements.",
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "default": "./dist/custom-elements.js"
+    }
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "lint": "eslint src",
+    "format": "npm run lint -- --fix",
+    "prebuild": "npm run clean",
+    "build": "rollup -c",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ok-steve/custom-elements.git"
+  },
+  "keywords": [
+    "javascript"
+  ],
+  "author": {
+    "name": "Steve Cherry",
+    "email": "steve@stevecherry.net",
+    "url": "https://stevecherry.net"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ok-steve/custom-elements/issues"
+  },
+  "homepage": "https://github.com/ok-steve/custom-elements#readme",
+  "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-compat": "^6.0.1",
+    "eslint-plugin-import": "^2.31.0",
+    "rimraf": "^6.0.1",
+    "rollup": "^4.24.3"
+  }
+}
