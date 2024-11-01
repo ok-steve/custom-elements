@@ -1,3 +1,7 @@
+export function cors(url, proxy = "https://corsproxy.io?") {
+  return `${proxy}${encodeURIComponent(url)}`;
+}
+
 export function createElement(tag, props = {}, ...children) {
   const element = document.createElement(tag);
 
@@ -9,7 +13,7 @@ export function createElement(tag, props = {}, ...children) {
 }
 
 export function createElementFromString(text) {
-  return createElement('template', {
+  return createElement("template", {
     innerHTML: text,
   }).content.cloneNode(true);
 }
