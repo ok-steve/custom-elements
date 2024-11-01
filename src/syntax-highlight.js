@@ -28,8 +28,6 @@ class SyntaxHighlightElement extends HTMLElement {
   }
 
   async connectedCallback() {
-    this.shadowRoot.append(template);
-
     const config = {
       lang: this.language,
     };
@@ -46,7 +44,7 @@ class SyntaxHighlightElement extends HTMLElement {
     }
 
     const html = await codeToHtml(this.code, config);
-    this.shadowRoot.append(createElementFromString(html));
+    this.shadowRoot.append(template, createElementFromString(html));
   }
 
   /**
