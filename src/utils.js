@@ -9,7 +9,7 @@ export function createElement(tag, props = {}, ...children) {
 }
 
 export function createElementFromString(text) {
-  const template = document.createElement("template");
-  template.innerHTML = text;
-  return template.content.cloneNode(true);
+  return createElement('template', {
+    innerHTML: text,
+  }).content.cloneNode(true);
 }
