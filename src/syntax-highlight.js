@@ -1,25 +1,11 @@
-import { codeToHtml } from "https://cdn.jsdelivr.net/npm/shiki@1.22.2/+esm";
-import { createElementFromString } from "./utils.js";
+import Prism from "https://cdn.jsdelivr.net/npm/prismjs@1.29.0/+esm";
+import "https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js";
+import { createElement } from "./utils.js";
 
-const template = createElementFromString(`
-  <style>
-    pre {
-      margin-block: 0;
-    }
+const CDN_BASE_URL = "https://cdn.jsdelivr.net/npm/prismjs@1.29.0";
 
-    @media (prefers-color-scheme: dark) {
-      .shiki,
-      .shiki span {
-        color: var(--shiki-dark) !important;
-        background-color: var(--shiki-dark-bg) !important;
-        /* Optional, if you also want font styles */
-        font-style: var(--shiki-dark-font-style) !important;
-        font-weight: var(--shiki-dark-font-weight) !important;
-        text-decoration: var(--shiki-dark-text-decoration) !important;
-      }
-    }
-  </style>
-`);
+Prism.manual = true;
+Prism.plugins.autoloader.languages_path = `${CDN_BASE_URL}/components/`;
 
 class SyntaxHighlightElement extends HTMLElement {
   constructor() {
@@ -28,23 +14,35 @@ class SyntaxHighlightElement extends HTMLElement {
   }
 
   async connectedCallback() {
-    const config = {
-      lang: this.language,
-    };
-
-    if (this.theme.trim(" ").includes(" ")) {
-      const [light, dark] = this.theme.trim(" ").split(" ");
-
-      config.themes = {
-        light,
-        dark,
-      };
-    } else {
-      config.theme = this.theme;
+    if (!this.code) {
+      return;
     }
 
-    const html = await codeToHtml(this.code, config);
-    this.shadowRoot.append(template, createElementFromString(html));
+    const themes = Array.isArray(this.theme) ? this.theme : [this.theme];
+
+    const styles = themes.map((theme, i) => {
+      const props = {
+        rel: "stylesheet",
+        href: `${CDN_BASE_URL}/themes/${
+          theme === "prism" ? theme : `prism-${theme}`
+        }.min.css`,
+      };
+
+      if (themes.length > 1) {
+        props.media = `(prefers-color-scheme: ${i % 2 ? "dark" : "light"})`;
+      }
+
+      return createElement("link", props);
+    });
+
+    // Clone children to preserve the original element outside the Shadow DOM
+    const children = Array.from(this.children).map((child) =>
+      child.cloneNode(true)
+    );
+
+    this.shadowRoot.append(...styles, ...children);
+
+    Prism.highlightAllUnder(this.shadowRoot);
   }
 
   /**
@@ -60,7 +58,7 @@ class SyntaxHighlightElement extends HTMLElement {
    */
 
   get code() {
-    return this.codeTarget.textContent;
+    return this.codeTarget?.textContent;
   }
 
   get language() {
@@ -72,7 +70,9 @@ class SyntaxHighlightElement extends HTMLElement {
   }
 
   get theme() {
-    return this.getAttribute("theme") || "solarized-light";
+    const theme = this.getAttribute("theme")?.trim() || "solarizedlight";
+
+    return theme.includes(" ") ? theme.split(" ") : theme;
   }
 }
 
