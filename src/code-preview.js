@@ -7,22 +7,23 @@ const template = createElementFromString(`
     }
 
     iframe {
+      inline-size: 100%;
+      block-size: 100%;
       aspect-ratio: var(--aspect-ratio, 16 / 9);
       border: 1px solid;
-      width: 100%;
     }
   </style>
   <slot></slot>
 `);
 
-function createSrcdoc({ html, css, js }) {
+function createSrcdoc({ html, css, js, title }) {
   return `
     <!DOCTYPE html>
     <html lang="en">
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale:1.0" />
-        <title>Code Preview</title>
+        <title>${title}</title>
         ${css ? `<style>${css}</style>` : ""}
         ${js ? `<script type="module">${js}</script>` : ""}
       </head>
@@ -40,8 +41,15 @@ class CodePreviewElement extends HTMLElement {
   }
 
   async connectedCallback() {
-    const preview = createElement('iframe', {
-      srcdoc: createSrcdoc(this.code),
+    if (this.codeTargets.length < 1) {
+      return;
+    }
+
+    const preview = createElement("iframe", {
+      srcdoc: createSrcdoc({
+        ...this.code,
+        title: this.title,
+      }),
     });
 
     this.shadowRoot.append(preview, template.content.cloneNode(true));
@@ -62,7 +70,7 @@ class CodePreviewElement extends HTMLElement {
   get code() {
     const code = {};
 
-    this.codeTargets.forEach((target) => {
+    this.codeTargets?.forEach((target) => {
       const language = target
         .getAttribute("class")
         .split(" ")
@@ -73,6 +81,10 @@ class CodePreviewElement extends HTMLElement {
     });
 
     return code;
+  }
+
+  get title() {
+    return this.getAttribute("title")?.trim() || "Code Preview";
   }
 }
 
