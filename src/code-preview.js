@@ -44,7 +44,7 @@ class CodePreviewElement extends HTMLElement {
       srcdoc: createSrcdoc(this.code),
     });
 
-    this.shadowRoot.append(preview, template);
+    this.shadowRoot.append(preview, template.content.cloneNode(true));
   }
 
   /**

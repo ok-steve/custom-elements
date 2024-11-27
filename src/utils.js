@@ -15,7 +15,7 @@ export function createElement(tag, props = {}, ...children) {
 export function createElementFromString(text) {
   return createElement("template", {
     innerHTML: text,
-  }).content.cloneNode(true);
+  });
 }
 
 export function memoize(fn) {

@@ -33,7 +33,7 @@ class OEmbedElement extends HTMLElement {
     const request = await fetch(`${embedUrl}?${params.toString()}`);
     const { html } = await request.json();
 
-    this.append(createElementFromString(html));
+    this.append(createElementFromString(html).content.cloneNode(true));
   }
 
   /**
