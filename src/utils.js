@@ -17,3 +17,17 @@ export function createElementFromString(text) {
     innerHTML: text,
   }).content.cloneNode(true);
 }
+
+export function memoize(fn) {
+  const cache = new WeakMap();
+
+  return (...args) => {
+    const key = args.join(',');
+
+    if (!cache.has(key)) {
+      cache.set(key, fn(...args));
+    }
+
+    return cache.get(key);
+  }
+}

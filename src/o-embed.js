@@ -1,15 +1,13 @@
-import { cors, createElementFromString } from "./utils.js";
+import { cors, createElementFromString, memoize } from "./utils.js";
 
-async function getProviders() {
+const getProviders = memoize(async (proxy) => {
   try {
-    const response = await fetch(cors("https://oembed.com/providers.json"));
+    const response = await fetch(cors("https://oembed.com/providers.json", proxy));
     return response.json();
   } catch (err) {
     return [];
   }
-}
-
-const PROVIDERS = getProviders();
+});
 
 class OEmbedElement extends HTMLElement {
   async connectedCallback() {
@@ -18,14 +16,14 @@ class OEmbedElement extends HTMLElement {
     }
 
     const source = new URL(this.src);
-    const providers = await PROVIDERS;
+    const providers = await getProviders(this.proxy);
 
     const embedUrl = providers
       .filter(
         // eslint-disable-next-line-camelcase
         ({ provider_url }) => provider_url.includes(source.host)
       )
-      .map(({ endpoints }) => endpoints[0].url)[0];
+      .map(({ endpoints }) => cors(endpoints[0].url, this.proxy))[0];
 
     if (!embedUrl) {
       return;
@@ -44,6 +42,10 @@ class OEmbedElement extends HTMLElement {
 
   get src() {
     return this.getAttribute('src');
+  }
+
+  get proxy() {
+    return this.getAttribute || "";
   }
 }
 
