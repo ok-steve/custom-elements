@@ -13,8 +13,10 @@
     "clean": "rimraf dist",
     "lint": "eslint src",
     "format": "npm run lint -- --fix",
+    "build:docs": "eleventy",
+    "build:js": "rollup -c",
     "prebuild": "npm run clean",
-    "build": "rollup -c",
+    "build": "npm run build:docs && npm run build:js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -35,6 +37,7 @@
   },
   "homepage": "https://github.com/ok-steve/custom-elements#readme",
   "devDependencies": {
+    "@11ty/eleventy": "^3.0.0",
     "@rollup/plugin-terser": "^0.4.4",
     "eslint": "^8.57.1",
     "eslint-config-airbnb-base": "^15.0.0",
